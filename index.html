@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegoLink – Crypto Wealth Engine</title>
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js for charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    html, body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+    .glass { background: rgba(255,255,255,0.15); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 2px solid rgba(255,255,255,0.20); box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .glass-soft { background: rgba(255,255,255,0.10); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1.5px solid rgba(255,255,255,0.15); box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .glass-button { background: rgba(30, 58, 138, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(30, 58, 138, 0.25); color: #1e3a8a; font-weight: 600; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.15), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .glass-button:hover { background: rgba(30, 58, 138, 0.25); transform: translateY(-2px); box-shadow: 0 12px 25px rgba(30, 58, 138, 0.2), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .glass-button-orange { background: rgba(251, 146, 60, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(251, 146, 60, 0.25); color: #ea580c; font-weight: 600; box-shadow: 0 8px 20px rgba(251, 146, 60, 0.15), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .glass-button-orange:hover { background: rgba(251, 146, 60, 0.25); transform: translateY(-2px); box-shadow: 0 12px 25px rgba(251, 146, 60, 0.2), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .btn-navy { background: linear-gradient(90deg, #1e3a8a, #1e40af); color: #fff; }
+    .btn-navy:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .btn-orange { background: linear-gradient(90deg, #fb923c, #f97316); color: #fff; }
+    .btn-orange:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .chip { box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+    .text-navy-800 { color: #1e3a8a; }
+    .text-navy-600 { color: #2563eb; }
+    .bg-navy-gradient { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+    .portfolio-image {
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body class="text-slate-800 relative">
+  <!-- Background accents -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-sky-200/40 blur-3xl animate-pulse"></div>
+    <div class="absolute top-40 right-0 h-96 w-96 rounded-full bg-orange-200/40 blur-3xl animate-pulse"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-blue-50/80 backdrop-blur-xl border-b border-blue-100/60 shadow-sm">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-100/40 via-indigo-100/30 to-purple-100/40 -z-10"></div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
+      <div class="flex items-center gap-3">
+        <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">AegoLink</span>
+      </div>
+      <nav class="hidden lg:flex items-center gap-6 text-sm text-slate-700 font-medium">
+        <a href="#hero" class="hover:text-navy-600">AI Trading</a>
+        <a href="#features" class="hover:text-navy-600">Our Programs</a>
+        <a href="#deposit" class="hover:text-navy-600">Fund Your Future</a>
+        <a href="#token" class="hover:text-navy-600">Token</a>
+      </nav>
+      <button onclick="document.getElementById('deposit').scrollIntoView({behavior:'smooth'})" class="btn-navy rounded-xl px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm shadow-md transition">Make Deposit</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-orange-50">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 items-center min-h-[70vh]">
+        <!-- Left Content - 7 columns -->
+        <div class="lg:col-span-7 text-center lg:text-left">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900 mb-4 sm:mb-6">
+            Your Crypto Wealth, <span class="bg-gradient-to-r from-blue-800 to-orange-400 bg-clip-text text-transparent">Grown by AI</span>
+          </h1>
+          <p class="text-base sm:text-lg text-slate-600 mb-6 sm:mb-8 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+            We combine <strong>AI agentic trading</strong>, <strong>real‑time ML signals</strong>, and a <strong>Hybrid Crypto & Stock strategy</strong>. Deposit crypto → auto‑convert into a diversified portfolio → access your dashboard.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 items-center lg:items-start">
+            <button onclick="document.getElementById('deposit').scrollIntoView({behavior:'smooth'})" class="btn-navy rounded-xl px-4 sm:px-6 py-2 sm:py-3 shadow-md transition text-sm sm:text-base w-full sm:w-auto">
+              Start with Crypto Deposit <i data-lucide="arrow-right" class="inline-block w-4 h-4 ml-2"></i>
+            </button>
+            <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" class="glass-button rounded-xl px-4 sm:px-6 py-2 sm:py-3 transition text-sm sm:text-base w-full sm:w-auto">
+              View Features
+            </button>
+          </div>
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
+            <span class="px-3 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 chip text-xs sm:text-sm">Bank‑grade Security</span>
+            <span class="px-3 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 chip text-xs sm:text-sm">On‑chain Transparency</span>
+            <span class="px-3 sm:px-4 py-1 sm:py-2 rounded-full bg-white/70 backdrop-blur text-slate-700 chip text-xs sm:text-sm">Risk Controls</span>
+          </div>
+        </div>
+        
+        <!-- Right Charts - 5 columns -->
+        <div class="lg:col-span-5 space-y-4 sm:space-y-6 mt-8 lg:mt-0">
+          <div class="glass rounded-2xl p-4 sm:p-6">
+            <div class="mb-3 sm:mb-4">
+              <div class="text-base sm:text-lg font-semibold text-navy-800 flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 sm:w-5 h-4 sm:h-5 text-navy-600"></i> Portfolio Performance
+              </div>
+              <div class="text-slate-600 text-xs sm:text-sm">AI‑managed portfolio growth</div>
+            </div>
+            <div class="h-32 sm:h-40 lg:h-48 flex items-center justify-center overflow-hidden rounded-xl">
+              <img src="portfolio_value_over_time.png" alt="Portfolio Value Over Time" class="portfolio-image w-full h-full object-cover" />
+            </div>
+          </div>
+          
+          <div class="glass rounded-2xl p-4 sm:p-6">
+            <div class="mb-3 sm:mb-4">
+              <div class="text-base sm:text-lg font-semibold text-orange-800 flex items-center gap-2">
+                <i data-lucide="pie-chart" class="w-4 sm:w-5 h-4 sm:h-5 text-orange-500"></i> Smart Allocation
+              </div>
+              <div class="text-slate-600 text-xs sm:text-sm">AI-optimized portfolio distribution</div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 h-auto sm:h-32 lg:h-48">
+              <!-- Chart Area -->
+              <div class="relative h-32 sm:h-full">
+                <canvas id="allocationChart" class="w-full h-full"></canvas>
+              </div>
+              
+              <!-- Legend Area -->
+              <div class="flex flex-col justify-center space-y-2 sm:space-y-3">
+                <div class="bg-white/90 backdrop-blur-sm rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3">
+                  <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-orange-500 flex-shrink-0"></div>
+                    <div>
+                      <div class="font-semibold text-slate-900 text-xs sm:text-sm">AI Startups 40%</div>
+                      <div class="text-slate-600 text-xs">High-growth tech ventures</div>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-blue-800 flex-shrink-0"></div>
+                    <div>
+                      <div class="font-semibold text-slate-900 text-xs sm:text-sm">Crypto 35%</div>
+                      <div class="text-slate-600 text-xs">BTC, ETH, DeFi protocols</div>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-slate-600 flex-shrink-0"></div>
+                    <div>
+                      <div class="font-semibold text-slate-900 text-xs sm:text-sm">Stocks 25%</div>
+                      <div class="text-slate-600 text-xs">S&P 500, tech giants</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Packages Section -->
+  <section id="features" class="min-h-screen flex items-center relative bg-gradient-to-br from-slate-50 to-blue-50/30 py-10 sm:py-16 lg:py-20">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+          <div class="glass-button-orange rounded-full p-2 sm:p-3 transition-all duration-500 hover:scale-125 hover:rotate-12">
+            <i data-lucide="package" class="h-4 w-4 sm:h-6 sm:w-6 text-orange-600"></i>
+          </div>
+          <span>Our Packages</span>
+          <div class="glass-button rounded-full p-2 sm:p-3 transition-all duration-500 hover:scale-125 hover:-rotate-12 animate-pulse">
+            <i data-lucide="sparkles" class="h-4 w-4 sm:h-6 sm:w-6 text-navy-600"></i>
+          </div>
+        </h2>
+        <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">Comprehensive AI-powered solutions for modern crypto wealth management</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-navy-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="bar-chart-3" class="w-5 sm:w-6 h-5 sm:h-6 text-navy-600 flex-shrink-0"></i> 
+            <span class="text-sm sm:text-base">Predictive Analysis</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Advanced AI models forecast market moves with precision, giving you the edge in volatile markets.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:-rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-navy-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="cpu" class="w-5 sm:w-6 h-5 sm:h-6 text-navy-600 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">24/7 Trading</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Autonomous agents run continuously, executing trades globally across multiple markets and timeframes.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-orange-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="dollar-sign" class="w-5 sm:w-6 h-5 sm:h-6 text-orange-500 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Monthly Dividends</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Scheduled investor payouts from portfolio profits, ensuring consistent returns on your investment.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:-rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-navy-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="briefcase" class="w-5 sm:w-6 h-5 sm:h-6 text-navy-600 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Pro Management</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Expert team overseeing risk and compliance, ensuring your investments are professionally managed.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-orange-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="candlestick-chart" class="w-5 sm:w-6 h-5 sm:h-6 text-orange-500 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Token Launches</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Exclusive access to vetted token launches, giving you first access to promising opportunities.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:-rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-navy-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="activity" class="w-5 sm:w-6 h-5 sm:h-6 text-navy-600 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">ML Signals</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Streaming AI signals with volatility detection, providing real-time market intelligence.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-orange-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="shield-alert" class="w-5 sm:w-6 h-5 sm:h-6 text-orange-500 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Rug-Pull Scanner</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Advanced detection of suspicious liquidity patterns, protecting your investments from fraud.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:-rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-orange-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="line-chart" class="w-5 sm:w-6 h-5 sm:h-6 text-orange-500 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Hybrid Strategy</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Balanced allocation across AI startups, crypto, and traditional stocks for optimal diversification.</p>
+        </div>
+        
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 cursor-pointer">
+          <div class="flex items-center gap-2 sm:gap-3 text-navy-800 font-semibold mb-2 sm:mb-3">
+            <i data-lucide="graduation-cap" class="w-5 sm:w-6 h-5 sm:h-6 text-navy-600 flex-shrink-0"></i>
+            <span class="text-sm sm:text-base">Academy</span>
+          </div>
+          <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">Comprehensive training in tech trading, algorithmic finance, and machine learning strategies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deposit Section -->
+  <section id="deposit" class="min-h-screen flex items-center relative bg-gradient-to-br from-sky-50/80 to-orange-50/60 py-10 sm:py-16 lg:py-20">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 sm:mb-12">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">Fund Your Future with Crypto</h2>
+        <p class="text-base sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
+          Make a secure crypto deposit and our engine auto‑converts it into a diversified portfolio spanning AI agentic strategies, crypto, stocks and AI startup exposure.
+        </p>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
+        <!-- Deposit Form -->
+        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+          <div class="mb-4 sm:mb-6">
+            <div class="text-lg sm:text-xl lg:text-2xl font-semibold text-slate-900 flex items-center gap-2 sm:gap-3 mb-2">
+              <i data-lucide="wallet" class="w-5 h-5 sm:w-6 sm:h-6 text-navy-600 flex-shrink-0"></i> 
+              <span>Crypto Deposit</span>
+            </div>
+            <div class="text-slate-600 text-sm sm:text-base">USDT, BTC or ETH supported for instant funding.</div>
+          </div>
+          
+          <div class="space-y-4 sm:space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Amount</label>
+              <input id="amount" type="number" min="0" step="0.01" value="1000" 
+                class="w-full bg-white/70 backdrop-blur border border-white/60 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-base sm:text-lg placeholder:text-slate-400" 
+                placeholder="1000" />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Asset</label>
+              <select id="asset" class="w-full bg-white/70 backdrop-blur border border-white/60 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-base sm:text-lg">
+                <option value="USDT">USDT (Tether)</option>
+                <option value="BTC">BTC (Bitcoin)</option>
+                <option value="ETH">ETH (Ethereum)</option>
+              </select>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+              <span class="px-2 sm:px-3 py-1 rounded-full bg-blue-100/70 backdrop-blur text-blue-800 flex items-center gap-1 text-xs sm:text-sm">
+                <i data-lucide="shield-check" class="w-3 h-3 sm:w-4 sm:h-4"></i> Secure
+              </span>
+              <span class="px-2 sm:px-3 py-1 rounded-full bg-orange-100/70 backdrop-blur text-orange-700 text-xs sm:text-sm">
+                Auto‑convert on confirm
+              </span>
+            </div>
+            
+            <button id="convertBtn" class="w-full glass-button rounded-xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-500 hover:scale-105">
+              Convert & Invest <i data-lucide="arrow-right" class="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trust Panel -->
+        <div class="glass-soft rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+          <div class="mb-6 sm:mb-8">
+            <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 mb-2">Built for Trust</h3>
+            <p class="text-slate-600 text-sm sm:text-base">Security & transparency at the core of everything we do.</p>
+          </div>
+          
+          <div class="space-y-4 sm:space-y-6">
+            <div class="flex items-start gap-3 sm:gap-4">
+              <div class="flex-shrink-0">
+                <i data-lucide="shield-check" class="w-6 h-6 sm:w-7 sm:h-7 text-navy-600 mt-1"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-slate-900 mb-1 text-sm sm:text-base">Bank‑grade Security</div>
+                <div class="text-slate-600 text-xs sm:text-sm">2FA authentication, encrypted wallets, and segregated accounts protect your assets.</div>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3 sm:gap-4">
+              <div class="flex-shrink-0">
+                <i data-lucide="candlestick-chart" class="w-6 h-6 sm:w-7 sm:h-7 text-orange-500 mt-1"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-slate-900 mb-1 text-sm sm:text-base">On‑chain Transparency</div>
+                <div class="text-slate-600 text-xs sm:text-sm">Blockchain audit trails and live reporting give you complete visibility.</div>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3 sm:gap-4">
+              <div class="flex-shrink-0">
+                <i data-lucide="line-chart" class="w-6 h-6 sm:w-7 sm:h-7 text-navy-600 mt-1"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-slate-900 mb-1 text-sm sm:text-base">Risk Controls</div>
+                <div class="text-slate-600 text-xs sm:text-sm">Position sizing, stop‑loss logic, and exposure caps manage downside risk.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Token Launch Section -->
+  <section id="token" class="relative bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/60 py-10 sm:py-16 lg:py-20">
+    <div class="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30"></div>
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
+      <div class="text-center mb-8 sm:mb-12">
+        <div class="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <div class="glass-button-orange rounded-full p-2 sm:p-3 transition-all duration-700 hover:scale-110 hover:rotate-6 animate-pulse">
+            <i data-lucide="coins" class="h-5 w-5 sm:h-6 sm:w-6 text-orange-600"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">AegoLink Token</h2>
+          <div class="glass-button rounded-full p-2 sm:p-3 transition-all duration-700 hover:scale-110 hover:-rotate-6 animate-pulse">
+            <i data-lucide="rocket" class="h-5 w-5 sm:h-6 sm:w-6 text-navy-600"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
+        <!-- Token Information -->
+        <div class="glass-soft rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+          <div class="mb-4 sm:mb-6">
+            <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-tr from-orange-400 to-orange-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                <i data-lucide="bitcoin" class="h-5 w-5 sm:h-6 sm:w-6 text-white"></i>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Bitcoin-Pegged Stability</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">Backed by the world's leading cryptocurrency</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                <i data-lucide="layers" class="h-5 w-5 sm:h-6 sm:w-6 text-white"></i>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Yearn Protocol Integration</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">Connected to DeFi's premier yield optimization platform</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+              <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-tr from-purple-400 to-purple-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                <i data-lucide="calendar" class="h-5 w-5 sm:h-6 sm:w-6 text-white"></i>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">December 2024 Launch</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">Mark your calendars for our official token release</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-50/50 to-purple-50/50 rounded-2xl p-4 sm:p-6 border border-white/40">
+            <p class="text-slate-700 leading-relaxed text-sm sm:text-base">
+              The <strong>AegoLink Token</strong> represents the future of AI-driven wealth management. Our innovative token is <strong>pegged to Bitcoin</strong> for stability while being deeply integrated with <strong>Yearn Finance protocols</strong> to maximize yield opportunities across the DeFi ecosystem.
+            </p>
+            <p class="text-slate-700 leading-relaxed mt-2 sm:mt-3 text-sm sm:text-base">
+              This unique combination provides holders with Bitcoin's proven store of value properties while unlocking advanced DeFi yield strategies previously only available to institutional investors.
+            </p>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center lg:text-left">
+          <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-center">
+            <div class="mb-6 sm:mb-8">
+              <div class="inline-block p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 shadow-2xl transform hover:scale-105 transition-all duration-500 cursor-pointer mb-4 sm:mb-6">
+                <span class="text-2xl sm:text-3xl font-black text-white tracking-wider">TOKEN</span>
+              </div>
+              
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4">Get Early Access</h3>
+              <p class="text-slate-600 max-w-md mx-auto leading-relaxed text-sm sm:text-base px-4 sm:px-0">
+                Join thousands of forward-thinking investors securing their position for the December launch. Early access members receive:
+              </p>
+            </div>
+
+            <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8 text-left max-w-md mx-auto">
+              <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex-shrink-0"></div>
+                <span class="text-slate-700">Exclusive pre-launch pricing</span>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex-shrink-0"></div>
+                <span class="text-slate-700">Priority allocation guarantees</span>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 flex-shrink-0"></div>
+                <span class="text-slate-700">Beta access to trading platform</span>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex-shrink-0"></div>
+                <span class="text-slate-700">Direct access to development updates</span>
+              </div>
+            </div>
+
+            <button class="glass-button-orange rounded-2xl px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg transition-all duration-500 hover:scale-105 hover:shadow-xl w-full">
+              Join Waiting List <i data-lucide="arrow-right" class="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-2"></i>
+            </button>
+            
+            <p class="text-xs text-slate-500 mt-3 sm:mt-4">
+              🔒 Your information is secure and will never be shared
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-blue-100/60 bg-blue-50/80 backdrop-blur-xl">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-100/30 via-indigo-100/20 to-purple-100/30 -z-10"></div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-600 flex flex-col md:flex-row items-center justify-between gap-4 relative">
+      <div>© <span id="year"></span> AegoLink</div>
+      <div class="flex items-center gap-4">
+        <a class="hover:text-navy-600" href="#">Privacy</a>
+        <a class="hover:text-navy-600" href="#">Terms</a>
+        <a class="hover:text-navy-600" href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Icons
+    lucide.createIcons();
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Charts data
+    const lineLabels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    const lineValues = [10000,10350,10100,10880,11260,12120,12500];
+
+    // Portfolio image is now displayed directly, no chart needed
+
+    // Allocation pie (hero)
+    const allocCtx = document.getElementById('allocationChart');
+    if (allocCtx) {
+      new Chart(allocCtx, {
+        type: 'doughnut',
+        data: { labels: ['AI Startups','Crypto','Stocks'], datasets: [{ data: [40,35,25], backgroundColor: ['#fb923c','#1e40af','#475569'], borderWidth: 0 }]},
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }}, cutout: '60%' }
+      });
+    }
+
+    // Deposit logic (mock)
+    const convertBtn = document.getElementById('convertBtn');
+    const amountInput = document.getElementById('amount');
+    const viewDash = document.getElementById('viewDash');
+
+    function updateConvertState() {
+      const val = parseFloat(amountInput.value || '0');
+      if (val > 0) {
+        convertBtn.classList.remove('opacity-50','cursor-not-allowed');
+      } else {
+        convertBtn.classList.add('opacity-50','cursor-not-allowed');
+      }
+    }
+
+    updateConvertState();
+    amountInput.addEventListener('input', updateConvertState);
+
+    convertBtn.addEventListener('click', function() {
+      const val = parseFloat(amountInput.value || '0');
+      if (!(val > 0)) return;
+      alert('Deposit functionality would be implemented here. Thank you for your interest!');
+    });
+  </script>
+</body>
+</html>
